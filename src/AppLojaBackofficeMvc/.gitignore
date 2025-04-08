@@ -1,0 +1,16 @@
+# Ignore o banco SQLite
+*.db
+
+# Configurações do usuário do VS
+.vscode/
+
+# Diretórios de build
+bin/
+obj/
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+
+# Secretos locais
+appsettings.Production.json
