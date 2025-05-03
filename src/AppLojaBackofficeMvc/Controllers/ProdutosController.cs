@@ -9,6 +9,7 @@ using AppLojaBackofficeMvc.Data;
 using AppLojaBackofficeMvc.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using AppLojaBackofficeMvc.Services;
 
 
 namespace AppLojaBackofficeMvc.Controllers
@@ -18,23 +19,32 @@ namespace AppLojaBackofficeMvc.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+
+        private readonly IProdutoService _produtoService;
+        private readonly ICategoriaService _categoriaService;
+
         
         public ProdutosController(
-        ApplicationDbContext context,
-        UserManager<IdentityUser> userManager)
+        UserManager<IdentityUser> userManager,
+        IProdutoService produtoService,
+        ICategoriaService categoriaService)
         {
-         _context = context;
          _userManager = userManager;
+         _produtoService = produtoService;
+         _categoriaService = categoriaService;
         }
         
         // GET: Produtos
         public async Task<IActionResult> Index()
         {
             var vendedorLogado = _userManager.GetUserId(User);
-            var applicationDbContext = _context.Produtos
-            .Include(p => p.Categoria)
-            .Where(p=>p.VendedorId == vendedorLogado);
-            return View(await applicationDbContext.ToListAsync());
+            var produtos = await _produtoService.ListarTodosAsync();
+            var produtosDoVendedor = produtos
+                .Where(p => p.VendedorId == vendedorLogado)
+                .ToList();
+            return View(produtosDoVendedor);
+          
+           
         }
 
         // GET: Produtos/Details/5
@@ -45,12 +55,9 @@ namespace AppLojaBackofficeMvc.Controllers
                 return NotFound();
             }
             var vendedorLogado = _userManager.GetUserId(User);
-            var produto = await _context.Produtos
-                .Include(p => p.Categoria)
-                .Where(p=>p.VendedorId == vendedorLogado)
-                .FirstOrDefaultAsync(m => m.ProdutoId == id);
+            var produto = await _produtoService.BuscarPorIdAsync(id.Value);
                 
-            if (produto == null)
+            if (produto == null || vendedorLogado != produto.VendedorId)
             {
                 return NotFound();
             }
@@ -59,9 +66,10 @@ namespace AppLojaBackofficeMvc.Controllers
         }
 
         // GET: Produtos/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "CategoriaId", "CategoriaDescricao");
+            var categorias = await _categoriaService.ListarTodosAsync();
+            ViewData["CategoriaId"] = new SelectList(categorias, "CategoriaId", "CategoriaDescricao");
             return View();
         }
 
@@ -82,11 +90,11 @@ namespace AppLojaBackofficeMvc.Controllers
             
            if (ModelState.IsValid)
            {                      
-                _context.Add(produto);
-                await _context.SaveChangesAsync();
+                await _produtoService.CriarAsync(produto);
                 return RedirectToAction(nameof(Index));
            }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "CategoriaId", "CategoriaDescricao", produto.CategoriaId);
+            var categorias = await _categoriaService.ListarTodosAsync();
+            ViewData["CategoriaId"] = new SelectList(categorias, "CategoriaId", "CategoriaDescricao", produto.CategoriaId);
             return View(produto);
 
            
@@ -99,13 +107,15 @@ namespace AppLojaBackofficeMvc.Controllers
             {
                 return NotFound();
             }
-
-            var produto = await _context.Produtos.FindAsync(id);
-            if (produto == null)
+            var vendedorLogado = _userManager.GetUserId(User);
+            var produto = await _produtoService.BuscarPorIdAsync(id.Value);
+            if (produto == null || vendedorLogado != produto.VendedorId)
             {
                 return NotFound();
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "CategoriaId", "CategoriaDescricao", produto.CategoriaId);
+
+            var categorias = await _categoriaService.ListarTodosAsync();
+            ViewData["CategoriaId"] = new SelectList(categorias, "CategoriaId", "CategoriaDescricao", produto.CategoriaId);
             return View(produto);
         }
 
@@ -116,35 +126,34 @@ namespace AppLojaBackofficeMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProdutoId,ProdutoDescricao,ProdutoImagem,ProdutoPreco,ProdutoEstoque,CategoriaId,VendedorId")] Produto produto)
         {
-            if (id != produto.ProdutoId)
+            if (await _produtoService.BuscarPorIdAsync(produto.ProdutoId) == null)
             {
                 return NotFound();
+            }
+            var vendedorLogado = _userManager.GetUserId(User);
+            if (produto.VendedorId != vendedorLogado)
+            {
+                TempData["Erro"] = "Você não tem permissão para editar este produto.";
+                return RedirectToAction(nameof(Index));
             }
 
             ModelState.Remove("VendedorId");
             ModelState.Remove("Categoria");
-
+           
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(produto);
-                    await _context.SaveChangesAsync();
+                   await _produtoService.AtualizarAsync(produto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProdutoExists(produto.ProdutoId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                 throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "CategoriaId", "CategoriaDescricao", produto.CategoriaId);
+            var categorias = await _categoriaService.ListarTodosAsync();
+            ViewData["CategoriaId"] = new SelectList(categorias, "CategoriaId", "CategoriaDescricao", produto.CategoriaId);
             return View(produto);
         }
 
@@ -157,11 +166,8 @@ namespace AppLojaBackofficeMvc.Controllers
             }
                       
             var vendedorLogado = _userManager.GetUserId(User);
-            var produto = await _context.Produtos
-                .Include(p => p.Categoria)
-                .Where(p=>p.VendedorId == vendedorLogado)
-                .FirstOrDefaultAsync(m => m.ProdutoId == id);
-            if (produto == null)
+            var produto = await _produtoService.BuscarPorIdAsync(id.Value);
+            if (produto == null || vendedorLogado != produto.VendedorId)
             {
                 return NotFound();
             }
@@ -175,25 +181,19 @@ namespace AppLojaBackofficeMvc.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vendedorLogado = _userManager.GetUserId(User);
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await _produtoService.BuscarPorIdAsync(id);
             if (produto != null && vendedorLogado == produto.VendedorId)
             {
-                _context.Produtos.Remove(produto);
+                await _produtoService.RemoverAsync(id);
+                return RedirectToAction(nameof(Index));
             }
             else
             {
                 TempData["Erro"] = "Você não tem permissão para deletar este produto.";
                 return RedirectToAction(nameof(Index));
             }
-             
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                       
         }
-
-        private bool ProdutoExists(int id)
-        {
-            return _context.Produtos.Any(e => e.ProdutoId == id);
-        }
+        
     }
 }

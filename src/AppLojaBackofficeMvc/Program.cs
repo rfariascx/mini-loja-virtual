@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AppLojaBackofficeMvc.Data;
 using System.Globalization;
+using AppLojaBackofficeMvc.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+
+
 
 var app = builder.Build();
 

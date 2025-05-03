@@ -8,23 +8,27 @@ using Microsoft.EntityFrameworkCore;
 using AppLojaBackofficeMvc.Data;
 using AppLojaBackofficeMvc.Models;
 using Microsoft.AspNetCore.Authorization;
+using AppLojaBackofficeMvc.Services;
 
 namespace AppLojaBackofficeMvc.Controllers
 {
     [Authorize]
     public class CategoriasController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoriaService _categoriaService;
 
-        public CategoriasController(ApplicationDbContext context)
+
+        public CategoriasController(ICategoriaService categoriaService)
         {
-            _context = context;
+            _categoriaService = categoriaService;
+
         }
 
         // GET: Categorias
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categorias.ToListAsync());
+            
+            return View(await _categoriaService.ListarTodosAsync());
         }
 
         // GET: Categorias/Details/5
@@ -35,8 +39,8 @@ namespace AppLojaBackofficeMvc.Controllers
                 return NotFound();
             }
 
-            var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.CategoriaId == id);
+            var categoria = await _categoriaService.BuscarPorIdAsync(id.Value);
+                
             if (categoria == null)
             {
                 return NotFound();
@@ -60,8 +64,7 @@ namespace AppLojaBackofficeMvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(categoria);
-                await _context.SaveChangesAsync();
+                await _categoriaService.CriarAsync(categoria);
                 return RedirectToAction(nameof(Index));
             }
             return View(categoria);
@@ -75,7 +78,7 @@ namespace AppLojaBackofficeMvc.Controllers
                 return NotFound();
             }
 
-            var categoria = await _context.Categorias.FindAsync(id);
+            var categoria = await _categoriaService.BuscarPorIdAsync(id.Value);
             if (categoria == null)
             {
                 return NotFound();
@@ -99,12 +102,11 @@ namespace AppLojaBackofficeMvc.Controllers
             {
                 try
                 {
-                    _context.Update(categoria);
-                    await _context.SaveChangesAsync();
+                    await _categoriaService.AtualizarAsync(categoria);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoriaExists(categoria.CategoriaId))
+                    if (await _categoriaService.BuscarPorIdAsync(categoria.CategoriaId) == null)
                     {
                         return NotFound();
                     }
@@ -126,8 +128,7 @@ namespace AppLojaBackofficeMvc.Controllers
                 return NotFound();
             }
 
-            var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.CategoriaId == id);
+            var categoria = await _categoriaService.BuscarPorIdAsync(id.Value);
             if (categoria == null)
             {
                 return NotFound();
@@ -141,19 +142,31 @@ namespace AppLojaBackofficeMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria != null)
+            var categoria = await _categoriaService.BuscarPorIdAsync(id);
+            if (categoria == null)
             {
-                _context.Categorias.Remove(categoria);
+               return NotFound();
+
+            }
+                
+            try
+            {
+                await _categoriaService.RemoverAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Erro"] = ex.Message;
+                return RedirectToAction(nameof(Delete), new {id});
+            }
+            catch (Exception)
+            {
+                TempData["Erro"] = "Ocorreu um erro ao tentar excluir.";
+                return RedirectToAction(nameof(Delete), new {id});
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoriaExists(int id)
-        {
-            return _context.Categorias.Any(e => e.CategoriaId == id);
+            
+            
         }
     }
 }
