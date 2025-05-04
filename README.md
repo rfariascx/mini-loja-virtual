@@ -1,5 +1,5 @@
 # AppLojaBackoffice
-Aplicação de Blog Simples com MVC e API RESTful
+Aplicação de um Backoffice de um Marketplace com MVC e API RESTful.
 
 # 1. Apresentação
 Bem-vindo ao repositório do projeto [AppLojaBackoffice]. Este projeto é uma entrega do MBA DevXpert Full Stack .NET e é referente ao módulo Introdução ao Desenvolvimento ASP.NET Core. O objetivo principal desenvolver uma aplicação de blog que permite aos usuários criar, editar, visualizar e excluir posts e comentários, tanto através de uma interface web utilizando MVC quanto através de uma API RESTful. Descreva livremente mais detalhes do seu projeto aqui.
@@ -18,7 +18,7 @@ O projeto consiste em:
 # 3. Tecnologias Utilizadas
 * Linguagem de Programação: C#
  * Frameworks:
-    ASP.NET Core MVC
+ * ASP.NET Core MVC
  * ASP.NET Core Web API
  * Entity Framework Core
 * Banco de Dados: SQL Server
@@ -46,6 +46,7 @@ A estrutura do projeto é organizada da seguinte forma:
 * Autenticação e Autorização: Diferenciação entre usuários anonimos e vendedores logados.
 * API RESTful: Exposição de endpoints para operações CRUD via API.
 * Documentação da API: Documentação automática dos endpoints da API utilizando Swagger.
+* Não foi implementado CRUD para Vendedores. A criação do registro de vendedor é realizar a partir da criação do usuário no Identity.
 
 # 6. Como Executar o Projeto
 * Pré-requisitos

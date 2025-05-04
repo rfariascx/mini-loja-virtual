@@ -21,6 +21,10 @@ using Microsoft.Extensions.Logging;
 using AppLojaBackofficeMvc.Data;
 using AppLojaBackofficeMvc.Models;
 using Mono.TextTemplating;
+using AppLojaBackofficeMvc.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
+
 
 
 namespace AppLojaBackofficeMvc.Areas.Identity.Pages.Account
@@ -37,13 +41,16 @@ namespace AppLojaBackofficeMvc.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
+        private readonly IVendedorService _vendedorService;
+
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IVendedorService vendedorService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -52,6 +59,7 @@ namespace AppLojaBackofficeMvc.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
+            _vendedorService = vendedorService;
         }
 
         /// <summary>
@@ -140,17 +148,20 @@ namespace AppLojaBackofficeMvc.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    //Salva UserId como VendedorId no Db
-                   var vendedor = new Vendedor
-                   {
+                //Salva UserId como VendedorId no Db considerando o VendedorService
+                
+                var vendedorExiste = await _context.Vendedores.AnyAsync(v => v.VendedorId == user.Id);
+                if(!vendedorExiste)
+                {
+                await _vendedorService.CriarAsync(new Vendedor
+                {
                         VendedorId = user.Id,
                         VendedorEmail = user.Email,
                         VendedorNomeCompleto = Input.NomeCompleto,
-                    };
+                });
+                }
                     
-                    _context.Vendedores.Add(vendedor);
-                    await _context.SaveChangesAsync();
-
+                    
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

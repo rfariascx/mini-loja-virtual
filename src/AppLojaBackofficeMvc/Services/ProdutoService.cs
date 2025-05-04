@@ -53,6 +53,7 @@ namespace AppLojaBackofficeMvc.Services
 
         public async Task CriarAsync(Produto produto)
         {
+            
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
         }

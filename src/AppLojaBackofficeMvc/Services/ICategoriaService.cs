@@ -13,6 +13,8 @@ namespace AppLojaBackofficeMvc.Services
         Task CriarAsync(Categoria categoria);
         Task AtualizarAsync(Categoria categoria);
         Task RemoverAsync(int id);
+        Task<bool> ExisteAsync(int categoriaId);
+
         
     }
 }

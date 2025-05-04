@@ -36,8 +36,14 @@ namespace AppLojaBackofficeMvc.Services
 
         public async Task CriarAsync(Categoria categoria)
         {
+            
             _context.Categorias.Add(categoria);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExisteAsync(int id)
+        {
+            return await _context.Categorias.AnyAsync(c => c.CategoriaId == id);    
         }
 
         public async Task<List<Categoria>> ListarTodosAsync()
