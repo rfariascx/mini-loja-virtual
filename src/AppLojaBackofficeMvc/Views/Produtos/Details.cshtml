@@ -9,7 +9,21 @@
 <div>
     <h4>Produto</h4>
     <hr />
-    <dl class="row">
+    
+       <label>Imagem Atual:</label><br />
+                @if (!string.IsNullOrEmpty(Model.ProdutoImagem))
+                {
+                    <img src="@Url.Content("~/" + Model.ProdutoImagem)"
+                        alt="Imagem atual"
+                        style="width: 150px; height: 150px; object-fit: cover; border-radius: 6px; border: 1px solid #ccc;" />
+                }
+                else
+                {
+                    <div style="width: 150px; height: 150px; border: 1px dashed #aaa; display: flex; align-items: center; justify-content: center; color: #888;">
+                        Sem imagem
+                    </div>
+                }
+        <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ProdutoDescricao)
         </dt>

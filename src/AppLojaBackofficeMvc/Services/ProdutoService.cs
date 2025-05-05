@@ -39,12 +39,15 @@ namespace AppLojaBackofficeMvc.Services
             var produtoExiste = await _context.Produtos.FindAsync(produto.ProdutoId);
             if(produtoExiste == null)
                 throw new Exception("Produto não encontrado");
+            
+            var imagemFinal = string.IsNullOrEmpty(produto.ProdutoImagem) ? produtoExiste.ProdutoImagem : produto.ProdutoImagem;
 
             produtoExiste.ProdutoDescricao = produto.ProdutoDescricao;
-            produtoExiste.ProdutoImagem = produto.ProdutoImagem;
             produtoExiste.ProdutoPreco = produto.ProdutoPreco;
             produtoExiste.ProdutoEstoque = produto.ProdutoEstoque;
             produtoExiste.CategoriaId = produto.CategoriaId;
+            produtoExiste.ProdutoImagem = imagemFinal;
+
 
             await _context.SaveChangesAsync();
         }
@@ -68,5 +71,6 @@ namespace AppLojaBackofficeMvc.Services
                  await _context.SaveChangesAsync();
             }
         }
+
     }
 }

@@ -22,16 +22,20 @@ namespace AppLojaBackofficeMvc.Controllers
 
         private readonly IProdutoService _produtoService;
         private readonly ICategoriaService _categoriaService;
+        private readonly IProdutoImagemService _produtoImagemService;
 
         
         public ProdutosController(
         UserManager<IdentityUser> userManager,
         IProdutoService produtoService,
-        ICategoriaService categoriaService)
+        ICategoriaService categoriaService,
+        IProdutoImagemService produtoImagemService)
         {
          _userManager = userManager;
          _produtoService = produtoService;
          _categoriaService = categoriaService;
+         _produtoImagemService = produtoImagemService;
+        
         }
         
         // GET: Produtos
@@ -82,14 +86,19 @@ namespace AppLojaBackofficeMvc.Controllers
         {
             // Adiciona o vendedor logado
             var userId = _userManager.GetUserId(User);
-            produto.VendedorId = userId;
-            
+            produto.VendedorId = userId;            
 
             ModelState.Remove("VendedorId");
             ModelState.Remove("Categoria");
             
            if (ModelState.IsValid)
-           {                      
+           {    
+
+                if (produto.ImagemUpload != null)
+                {
+                    var caminhoImagem = await _produtoImagemService.SalvarImagemAsync(produto.ImagemUpload);
+                    produto.ProdutoImagem = caminhoImagem;
+                }                     
                 await _produtoService.CriarAsync(produto);
                 return RedirectToAction(nameof(Index));
            }
@@ -124,9 +133,10 @@ namespace AppLojaBackofficeMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProdutoId,ProdutoDescricao,ProdutoImagem,ProdutoPreco,ProdutoEstoque,CategoriaId,VendedorId")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("ProdutoId,ProdutoDescricao,ProdutoImagem,ImagemUpload,ProdutoPreco,ProdutoEstoque,CategoriaId,VendedorId")] Produto produto)
         {
-            if (await _produtoService.BuscarPorIdAsync(produto.ProdutoId) == null)
+            var produtoSelecionado = await _produtoService.BuscarPorIdAsync(produto.ProdutoId);
+            if ( produtoSelecionado == null)
             {
                 return NotFound();
             }
@@ -142,6 +152,12 @@ namespace AppLojaBackofficeMvc.Controllers
            
             if (ModelState.IsValid)
             {
+                
+                if (produto.ImagemUpload != null)
+                {
+                    var caminhoImagem = await _produtoImagemService.SalvarImagemAsync(produto.ImagemUpload);
+                    produto.ProdutoImagem = caminhoImagem;
+                }
                 try
                 {
                    await _produtoService.AtualizarAsync(produto);
