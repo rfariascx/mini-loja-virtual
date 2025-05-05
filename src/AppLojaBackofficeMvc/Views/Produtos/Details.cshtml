@@ -1,68 +1,64 @@
 @model AppLojaBackofficeMvc.Models.Produto
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Produto";
 }
 
-<h1>Details</h1>
+<h1 class="text-center my-4">Detalhes do Produto</h1>
 
-<div>
-    <h4>Produto</h4>
-    <hr />
-    
-       <label>Imagem Atual:</label><br />
-                @if (!string.IsNullOrEmpty(Model.ProdutoImagem))
-                {
-                    <img src="@Url.Content("~/" + Model.ProdutoImagem)"
-                        alt="Imagem atual"
-                        style="width: 150px; height: 150px; object-fit: cover; border-radius: 6px; border: 1px solid #ccc;" />
-                }
-                else
-                {
-                    <div style="width: 150px; height: 150px; border: 1px dashed #aaa; display: flex; align-items: center; justify-content: center; color: #888;">
-                        Sem imagem
-                    </div>
-                }
-        <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProdutoDescricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProdutoDescricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProdutoImagem)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProdutoImagem)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProdutoPreco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProdutoPreco)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProdutoEstoque)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProdutoEstoque)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Categoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Categoria.CategoriaDescricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VendedorId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VendedorId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProdutoId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col-md-4">
+        @if (!string.IsNullOrEmpty(Model.ProdutoImagem))
+        {
+            <img src="@Url.Content("~/" + Model.ProdutoImagem)"
+                 alt="Imagem atual"
+                 style="width: 100%; border-radius: 8px; border: 1px solid #ccc; object-fit: cover;" />
+        }
+        else
+        {
+            <div style="width: 100%; height: 300px; border: 1px dashed #aaa; display: flex; align-items: center; justify-content: center; color: #888; font-size: 16px; border-radius: 8px;">
+                Sem imagem
+            </div>
+        }
+    </div>
+
+    <div class="col-md-8">
+        <table class="table tabela-detalhes">
+            <tbody>
+                <tr>
+                    <th>Descrição</th>
+                    <td>@Model.ProdutoDescricao</td>
+                </tr>
+                <tr>
+                    <th>Imagem (caminho)</th>
+                    <td>@Model.ProdutoImagem</td>
+                </tr>
+                <tr>
+                    <th>Preço</th>
+                    <td>R$ @Model.ProdutoPreco.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <th>Estoque</th>
+                    <td>@Model.ProdutoEstoque</td>
+                </tr>
+                <tr>
+                    <th>Categoria</th>
+                    <td>@Model.Categoria.CategoriaDescricao</td>
+                </tr>
+                <tr>
+                    <th>Vendedor</th>
+                    <td>@Model.VendedorId</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.ProdutoId" class="btn btn-primary">
+                <i class="fas fa-pen"></i> Editar
+            </a>
+        </div>
+    </div>
 </div>

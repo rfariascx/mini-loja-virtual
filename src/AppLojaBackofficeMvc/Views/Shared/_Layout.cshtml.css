@@ -46,3 +46,34 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+.tabela-custom {
+    background-color: #fdfdfd;
+    border-radius: 6px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.tabela-custom thead {
+    background-color: #007bff;
+    color: white;
+}
+
+.tabela-custom thead th {
+    padding: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+.tabela-custom tbody td {
+    background-color: #f9f9f9;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.tabela-custom tbody tr:hover {
+    background-color: #e9ecef;
+    transition: background-color 0.2s ease;
+}
