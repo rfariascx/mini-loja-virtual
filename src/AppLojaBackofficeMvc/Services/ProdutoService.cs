@@ -71,6 +71,12 @@ namespace AppLojaBackofficeMvc.Services
                  await _context.SaveChangesAsync();
             }
         }
+        public async Task<List<Produto>> ObterTodosPorCategoriaAsync(int categoriaId)
+        {
+            return await _context.Produtos
+                .Where(p => p.CategoriaId == categoriaId)
+                .ToListAsync();
+        }
 
     }
 }

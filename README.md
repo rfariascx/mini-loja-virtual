@@ -8,7 +8,7 @@ Bem-vindo ao repositório do projeto [AppLojaBackoffice]. Este projeto é uma en
 Rafhael Farias
 
 
-# 2. Proposta do Projeto (em desenvolvimento)
+# 2. Proposta do Projeto
 O projeto consiste em:
 * Aplicação MVC: Interface web para interação com o backoffice de um Marketplace.
 * API RESTful: Exposição dos produtos e categorias cadastradas, permitindo manutenção por usuários autenticados e autorizados.
@@ -47,6 +47,9 @@ A estrutura do projeto é organizada da seguinte forma:
 * API RESTful: Exposição de endpoints para operações CRUD via API.
 * Documentação da API: Documentação automática dos endpoints da API utilizando Swagger.
 * Não foi implementado CRUD para Vendedores. A criação do registro de vendedor é realizar a partir da criação do usuário no Identity.
+* Camada Core Reutilizável: As regras de negócio foram concentradas em interfaces para reutilização tanto no projeto MVC quanto na WebAPI.
+* Upload de Imagens de Produtos: Funcionalidade implementada nos projetos, com uma interface dedicada para centralizar as regras de negócio relacionadas.
+
 
 # 6. Como Executar o Projeto
 * Pré-requisitos
@@ -58,24 +61,25 @@ A estrutura do projeto é organizada da seguinte forma:
 * Clone o Repositório: git clone https://github.com/rfariascx/mini-loja-virtual.git
 cd mini-loja-virtual
 * Configuração do Banco de Dados:
-
 * No arquivo appsettings.json, configure a string de conexão do SQL Server.
 * Rode o projeto para que a configuração do Seed crie o banco e popule com os dados básicos - em construção
 * Executar a Aplicação MVC:
-
 * cd src/AppLojaBackofficeMvc/
 * dotnet run
-* Acesse a aplicação em: http://localhost:5000
-*Executar a API (em construção):
+* Acesse a aplicação em: http://localhost:5136
+*Executar a API:
+* cd src/AppLojaBackofficeApi/
+* dotnet run
+* Acesse a aplicação em: http://localhost:5031/swagger/
 
 
 # 7. Instruções de Configuração
-* JWT para API: As chaves de configuração do JWT estão no appsettings.json.
+* JWT para API: As chaves de configuração do JWT estão no appsettings*.json.
 * Migrações do Banco de Dados: As migrações são gerenciadas pelo Entity Framework Core. Não é necessário aplicar devido a configuração do Seed de dados.
 
 # 8. Documentação da API
 * A documentação da API está disponível através do Swagger. Após iniciar a API, acesse a documentação em:
-* http://localhost:5001/swagger
+* http://localhost:5031/swagger/
 
 # 9. Avaliação
 * Este projeto é parte de um curso acadêmico e não aceita contribuições externas.

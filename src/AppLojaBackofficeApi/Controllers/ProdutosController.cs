@@ -71,6 +71,16 @@ namespace AppLojaBackofficeApi.Controllers
             }
         }
 
+        //GET: /api/produto/por-categoria/{id}
+        [HttpGet("por-categoria/{categoriaId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPorCategoria(int categoriaId)
+        {
+            var produtos = await _produtoService.ObterTodosPorCategoriaAsync(categoriaId);
+            return Ok(produtos);
+        }
+
+
         // POST: /api/produto
         [HttpPost]
         [Authorize]
