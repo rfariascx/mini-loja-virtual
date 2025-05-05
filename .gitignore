@@ -1,15 +1,15 @@
-# Banco de dados SQLite (gerado em tempo de execução)
+# Banco
 *.db
 
-# Configurações sensíveis de ambiente
+# Configurações sensíveis
 appsettings.*.json
 !appsettings.Development.json
 
-# Diretórios de build
+# Dir build
 bin/
 obj/
 
-# Diretórios e arquivos do VS Code / Visual Studio
+# Dir VS Code
 .vscode/
 *.user
 *.suo
@@ -17,11 +17,11 @@ obj/
 *.sln.docstates
 .vs/
 
-# Cache de pacotes
+# Cache
 .nuget/
 packages/
 
-# Logs e arquivos temporários
+# Logs e temps
 *.log
 *.tmp
 *.bak
@@ -32,19 +32,17 @@ packages/
 *.DS_Store
 Thumbs.db
 
-# Arquivos de publish temporários
+# Arquivos de publish temp
 publish/
 wwwroot/dist/
 
-# Ferramentas JetBrains e Resharper
+# Ferramentas
 .idea/
 *.resharper
 _ReSharper*/
 
-# >>> EXCEÇÕES IMPORTANTES <<<
-
-# Inclui o launchSettings.json (não ignora!)
+# Incluir o launchSettings.json
 !src/**/launchSettings.json
 
-# Inclui as imagens dos produtos
+# Incluir as imagens dos produtos para o seed
 !src/**/wwwroot/images/produtos/**

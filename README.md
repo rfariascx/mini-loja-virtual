@@ -59,7 +59,6 @@ A estrutura do projeto é organizada da seguinte forma:
 * Git
 * Passos para Execução
 * Clone o Repositório: git clone https://github.com/rfariascx/mini-loja-virtual.git
-cd mini-loja-virtual
 * Configuração do Banco de Dados:
 * No arquivo appsettings.json, configure a string de conexão do SQL Server.
 * Rode o projeto para que a configuração do Seed crie o banco e popule com os dados básicos - em construção
@@ -67,10 +66,18 @@ cd mini-loja-virtual
 * cd src/AppLojaBackofficeMvc/
 * dotnet run
 * Acesse a aplicação em: http://localhost:5136
-*Executar a API:
+* Executar a API:
 * cd src/AppLojaBackofficeApi/
 * dotnet run
 * Acesse a aplicação em: http://localhost:5031/swagger/
+* Orientações do Seed:  
+* Ao rodar o projeto pela primeira vez, em ambiente de desenvolvimento, os dados iniciais (seed) são criados automaticamente. *Isso inclui:
+- 3 categorias de produto
+- 1 usuário com login:
+  - **Email:** vendedordeteste@teste.com
+  - **Senha:** Senha@2025
+- 1 vendedor vinculado ao usuário
+- 3 produtos de exemplo com imagens
 
 
 # 7. Instruções de Configuração

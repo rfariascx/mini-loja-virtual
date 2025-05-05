@@ -148,7 +148,6 @@ namespace AppLojaBackofficeApi.Controllers
             }
             
             produto.VendedorId = produtoExistente.VendedorId;
-            produto.CategoriaId = produtoExistente.CategoriaId;
             produto.Categoria = null;
 
             ModelState.Remove("ProdutoId");

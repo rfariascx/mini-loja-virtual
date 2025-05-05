@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using AppLojaBackofficeMvc.Data;
 using System.Globalization;
 using AppLojaBackofficeMvc.Services;
+using AppLojaBackofficeApi.Configurations;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     }
 });
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -68,5 +71,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Produtos}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+//rodar o seed
+if (app.Environment.IsDevelopment())
+{
+    app.UseDbMigrationHelper();
+}
 
 app.Run();
