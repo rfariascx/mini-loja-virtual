@@ -19,10 +19,15 @@ namespace AppLojaBackofficeApi.Controllers
         private readonly IProdutoService _produtoService;
         private readonly ICategoriaService _categoriaService;
 
-        public ProdutosController(IProdutoService produtoService, ICategoriaService categoriaService)
+        private readonly IProdutoImagemService _produtoImagemService;
+
+        public ProdutosController(IProdutoService produtoService, 
+        ICategoriaService categoriaService, 
+        IProdutoImagemService produtoImagemService)
         {
             _produtoService = produtoService;
             _categoriaService = categoriaService;
+            _produtoImagemService = produtoImagemService;
         }
 
         //pegar o vendedor logado por meio do token JWT
@@ -69,7 +74,7 @@ namespace AppLojaBackofficeApi.Controllers
         // POST: /api/produto
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Post([FromBody] Produto produto)
+        public async Task<IActionResult> Post([FromForm] Produto produto)
         {
             
                       
@@ -91,6 +96,9 @@ namespace AppLojaBackofficeApi.Controllers
             
             if (ModelState.IsValid)
             {
+                var caminhoImagem = await _produtoImagemService.SalvarImagemAsync(produto.ImagemUpload);
+                produto.ProdutoImagem = caminhoImagem;
+
                 await _produtoService.CriarAsync(produto);
                 return CreatedAtAction(nameof(GetById), new { id = produto.ProdutoId }, produto);
             }
@@ -103,7 +111,7 @@ namespace AppLojaBackofficeApi.Controllers
         //PATCH: /api/produto/{id}
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> Patch(int id, [FromBody] Produto produto)
+        public async Task<IActionResult> Patch(int id, [FromForm] Produto produto)
         {
             if (id != produto.ProdutoId)
                 return BadRequest("Produto não encontrado");
@@ -122,6 +130,12 @@ namespace AppLojaBackofficeApi.Controllers
             {
                 return Forbid("Você não tem permissão para editar este produto.");
             }    
+
+              if (produto.ImagemUpload != null)
+            {
+                var caminhoImagem = await _produtoImagemService.SalvarImagemAsync(produto.ImagemUpload);
+                produto.ProdutoImagem = caminhoImagem;
+            }
             
             produto.VendedorId = produtoExistente.VendedorId;
             produto.CategoriaId = produtoExistente.CategoriaId;
@@ -137,7 +151,8 @@ namespace AppLojaBackofficeApi.Controllers
             }
 
             if (ModelState.IsValid)
-            {
+            {  
+
                 await _produtoService.AtualizarAsync(produto);
                 return NoContent();
             }

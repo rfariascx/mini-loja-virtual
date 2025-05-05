@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +19,10 @@ namespace AppLojaBackofficeMvc.Models
         
         
         public string? ProdutoImagem{get;set;}
+
+        [NotMapped]
+        [Display(Name = "Imagem do Produto")]
+        public IFormFile? ImagemUpload { get; set; }
 
         [Required]
         [Range(0.01, 999999.99)]

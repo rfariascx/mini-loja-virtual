@@ -14,7 +14,6 @@ namespace AppLojaBackofficeMvc.Services
         Task CriarAsync(Produto produto);
         Task AtualizarAsync(Produto produto);
         Task RemoverAsync(int id);
-
         
     }
 }

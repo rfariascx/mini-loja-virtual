@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AppLojaBackofficeApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7fb89272d8d1f5aba6835b6985508b1c747234c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+35db05984ceb5772f8c1fd669b971aa5f7ea4fb1")]
 [assembly: System.Reflection.AssemblyProductAttribute("AppLojaBackofficeApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AppLojaBackofficeApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
