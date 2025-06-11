@@ -1,68 +1,91 @@
-
-# Feedback do Projeto
 # Feedback - Avaliação Geral
 
-Este arquivo será utilizado pelo instrutor para consolidar os feedbacks da entrega do projeto.
 ## Front End
+
 ### Navegação
   * Pontos positivos:
-    - O projeto possui views e rotas definidas para as funcionalidades, seguindo o padrão do ASP.NET Core MVC. As views estão presentes e permitem a navegação entre as principais operações do sistema.
+    - Projeto MVC bem estruturado com navegação funcional e views para produtos, categorias e autenticação.
+
+  * Pontos negativos:
+    - Nenhum.
 
 ### Design
-    - Será avaliado na entrega final
+  - Interface clara, objetiva e bem estruturada para fins administrativos.
 
 ### Funcionalidade
   * Pontos positivos:
-    - As funcionalidades de cadastro, edição, visualização e exclusão de entidades estão implementadas no front-end, conforme os casos de uso esperados para uma aplicação de backoffice.
+    - CRUD de produtos e categorias implementado na API e MVC.
+    - Identity implementado corretamente em ambas as camadas com JWT e Cookies.
+    - Seed de dados com SQLite e migrations automáticas funcionando.
+    - A criação do vendedor junto ao usuário do Identity está corretamente implementada.
 
+  * Pontos negativos:
+    - O projeto API depende do projeto MVC, o que compromete a independência de camadas.
+    - Código de negócio e lógica de acesso ao banco estão duplicados nas duas camadas, sem uma camada `Core` para centralização.
+  
 ## Back End
+
 ### Arquitetura
   * Pontos positivos:
-    - O projeto utiliza uma arquitetura simples, adequada para um CRUD básico, com uso do padrão MVC.
+    - Projetos organizados com separação entre API e MVC.
+    - Uso de boas práticas como DI, autenticação e configuração modular.
 
   * Pontos negativos:
-    - Todas as regras de negócio estão concentradas nas Controllers, o que viola o princípio de separação de responsabilidades e dificulta a manutenção e evolução do código para a mesma implementação numa API
-    - Não há uma camada centralizadora (CORE) para evitar duplicação de lógica entre possíveis controllers ou endpoints.
-    - Apesar do README mencionar uma API RESTful, não há implementação concreta de uma API separada no repositório, apenas o projeto MVC.
-    - Existe uma Controller de CRUD para "Vendedor", mas o correto seria o registro do vendedor ocorrer exclusivamente via processo de registro do Identity, não sendo adequado permitir CRUD com insert direto de vendedores.
+    - Violação da separação de responsabilidades: a API depende diretamente do MVC.
+    - Ausência de camada `Core` resultando em duplicação de lógica.
 
 ### Funcionalidade
   * Pontos positivos:
-    - As operações CRUD para as entidades principais estão implementadas e expostas via views.
-    - O projeto utiliza Entity Framework Core, conforme especificação.
+    - Funcionalidades principais entregues conforme o escopo: autenticação, CRUD e relacionamento vendedor-usuário.
 
   * Pontos negativos:
-    - Não há implementação de API RESTful separada, contrariando o escopo proposto.
-    - A criação do registro da entidade "Vendedor" ocorre no processo de registro do Identity, porém a existência de um CRUD separado para vendedores é inadequada e pode gerar inconsistências.
+    - Duplicação de código e dependência entre camadas afetam a escalabilidade e manutenção do sistema.
 
 ### Modelagem
   * Pontos positivos:
-    - A modelagem das entidades é simples e direta, adequada para o contexto de uma aplicação de backoffice.
+    - Entidades bem estruturadas e organizadas.
+    - Modelagem aderente aos requisitos do domínio.
 
   * Pontos negativos:
-    - A modelagem permite a criação de vendedores fora do fluxo de registro do Identity, o que não faz sentido para o domínio do problema.
-    - As regras de negócio deveriam ser extraídas das Controllers para uma camada de serviço, mesmo em projetos simples, para melhor organização e manutenção.
+    - Nenhum.
 
 ## Projeto
+
 ### Organização
   * Pontos positivos:
-    - O projeto está organizado em pastas, com separação de controllers, views e models, seguindo o padrão do ASP.NET Core MVC.
-    - Uso da pasta `src` na raiz.
-    - O arquivo de solução (`AppLojaBackoffice.sln`) está presente na raiz da pasta `src`.
-    - O arquivo `FEEDBACK.md` está presente.
+    - Estrutura em `src`, `.sln` na raiz e documentação presente.
+    - Código limpo e comentado.
+
+  * Pontos negativos:
+    - Forte acoplamento entre projetos, faltando modularização por meio de uma camada compartilhada.
 
 ### Documentação
   * Pontos positivos:
-    - O repositório possui um arquivo `README.md` bem documentado, com informações do projeto e instruções de execução.
-    - O arquivo `FEEDBACK.md` está presente.
+    - `README.md` e `FEEDBACK.md` estão presentes e com informações úteis.
+    - Swagger ativo na API.
 
   * Pontos negativos:
-    - Não há implementação concreta de API RESTful e, consequentemente, não há documentação Swagger funcional para endpoints de API.
+    - Nenhum.
 
 ### Instalação
   * Pontos positivos:
-    - O projeto utiliza Entity Framework Core, conforme especificação.
+    - SQLite funcional, seed automático, migrations automatizadas.
 
   * Pontos negativos:
-    - Não foi identificada a implementação de seed de dados e migrations automáticas no start da aplicação. 
-    - Recomenda-se adicionar essa funcionalidade para facilitar o uso e testes do sistema.
+    - Nenhum.
+
+---
+
+# 📊 Matriz de Avaliação de Projetos
+
+| **Critério**                   | **Peso** | **Nota** | **Resultado Ponderado**                  |
+|-------------------------------|----------|----------|------------------------------------------|
+| **Funcionalidade**            | 30%      | 10       | 3,0                                      |
+| **Qualidade do Código**       | 20%      | 8        | 1,6                                      |
+| **Eficiência e Desempenho**   | 20%      | 6        | 1,2                                      |
+| **Inovação e Diferenciais**   | 10%      | 7        | 0,7                                      |
+| **Documentação e Organização**| 10%      | 10       | 1,0                                      |
+| **Resolução de Feedbacks**    | 10%      | 5        | 0,5                                      |
+| **Total**                     | 100%     | -        | **8,0**                                  |
+
+## 🎯 **Nota Final: 8 / 10**
